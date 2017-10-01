@@ -3,6 +3,8 @@ use std::fmt;
 const HASH_LEN: usize = 32;
 
 type BlockIndex = usize;
+
+#[derive(Serialize)]
 pub struct Hash {
     bytes: [u8; HASH_LEN],
 }
@@ -43,7 +45,7 @@ impl fmt::Debug for Hash {
 }
 
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct Block {
     pub index: BlockIndex,
     pub timestamp: usize,
@@ -55,17 +57,10 @@ pub struct Block {
 impl Block {
     pub fn hash(&self) -> Hash {
         use blake2::{Blake2s, Digest};
+        use serde_json;
 
         let mut hasher = Blake2s::default();
-
-
-        // TODO: Replace by consistent serialisation (e.g. using Serde)
-        hasher.input(format!("{:?}", self.index).as_bytes());
-        hasher.input(format!("{:?}", self.timestamp).as_bytes());
-        hasher.input(format!("{:?}", self.transactions).as_bytes());
-        hasher.input(format!("{:?}", self.proof).as_bytes());
-        hasher.input(format!("{}", self.previous_hash).as_bytes());
-
+        hasher.input(serde_json::to_string(&self).unwrap().as_bytes());
         Hash::from_bytes(hasher.result().into_iter())
     }
 }
@@ -147,5 +142,6 @@ fn valid_proof(last_proof: usize, proof: usize) -> bool {
     let mut hasher = Blake2s::default();
     hasher.input(guess.as_bytes());
     let guess_hash = format!("{}", Hash::from_bytes(hasher.result().into_iter()));
+    // HACK: Decrease difficulty to speed up development
     &guess_hash[..2] == "00"
 }
