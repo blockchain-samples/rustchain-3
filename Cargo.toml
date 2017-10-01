@@ -1,0 +1,9 @@
+[package]
+name = "rustchain"
+version = "0.1.0"
+authors = ["Mikhail Pak <mikhail.pak@tum.de>"]
+
+[dependencies]
+blake2 = "^0.6.1"
+data-encoding = "^2.0.0-rc.2"
+# rocket = "^0.3.3"
