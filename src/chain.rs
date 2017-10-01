@@ -70,7 +70,7 @@ impl Block {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Transaction {
     pub sender: String,
     pub recipient: String,
@@ -147,6 +147,5 @@ fn valid_proof(last_proof: usize, proof: usize) -> bool {
     let mut hasher = Blake2s::default();
     hasher.input(guess.as_bytes());
     let guess_hash = format!("{}", Hash::from_bytes(hasher.result().into_iter()));
-    println!("{}", guess_hash);
     &guess_hash[..2] == "00"
 }
