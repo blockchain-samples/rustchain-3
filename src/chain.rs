@@ -44,7 +44,6 @@ impl fmt::Debug for Hash {
     }
 }
 
-
 #[derive(Debug, Serialize)]
 pub struct Block {
     pub index: BlockIndex,
@@ -97,6 +96,7 @@ impl Blockchain {
         bc.add_block_with_previous_hash(42, Hash::zeros());
         bc
     }
+
     pub fn add_block_with_previous_hash(&mut self, proof: usize, previous_hash: Hash) {
         let block = Block {
             index: self.chain.len() + 1,
@@ -106,8 +106,8 @@ impl Blockchain {
             previous_hash: previous_hash,
         };
 
-        // Reset the current list of transactions
-        self.current_transactions = Vec::new(); // TODO: Delete elements instead of reallocating
+        // Clear the current list of transactions
+        self.current_transactions.clear();
 
         self.chain.push(block)
     }
